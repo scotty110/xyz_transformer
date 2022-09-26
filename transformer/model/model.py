@@ -10,12 +10,12 @@ import torch.nn.functional as F
 
 from decoder import decoder
 from encoder import encoder
-from utils import positional_encoder
+from utils import PositionalEncoding 
 
 class transformer(nn.Module):
     def __init__(self, d_shape:int):
         # Big Layers 
-        self.Pos_Encoding = positional_encoder 
+        self.PEnc = PositionalEncoding( d_shape ) 
         self.Encoder = encoder( d_shape )
         self.Decoder = decoder( d_shape )
         
@@ -23,6 +23,11 @@ class transformer(nn.Module):
         self.w = nn.Linear( d_shape, 1 )
 
     def forward( in_emb, out_emb ):
+        # Encoding
+        in_emb = Self.PEnc( in_emb )
+        out_emb = Self.PEnc( out_emb )
+
+        # Transformer Work
         e_output = self.Encoder( in_emb )
         d_output = self.Decoder( out_emb, e_output )
 
