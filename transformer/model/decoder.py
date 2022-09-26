@@ -44,11 +44,11 @@ class decode_layer(nn.Module):
 
 
 class decoder(nn.Module):
-    def __init__(self, d_shape, probs):
+    def __init__(self, d_shape, probs, n_layers:int=6):
         super().__init__()
         # Both input and output vectors are the same shape
         self.d_layers = nn.ModuleList(
-            [ decode_layer(d_shape) for i in range(6)]
+            [ decode_layer(d_shape) for i in range(n_layers)]
         )
 
         self.w = nn.Linear(d_shape, probs)
