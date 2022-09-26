@@ -26,9 +26,9 @@ class encode_layer(nn.Module):
         self.ln_3 = nn.LayerNorm( d_shape )
        
 
-    def forward(self, in_vect, out_vect):
+    def forward(self, in_vect ):
         block_1 = self.ln_1(
-                    self.mh_1( in_vect, in_vect, in_vect ) + out_vect
+                    self.mh_1( in_vect, in_vect, in_vect ) + in_vect
                   )  
 
         block_2 = self.ln_2( self.w1( block_1 ) )
@@ -37,17 +37,17 @@ class encode_layer(nn.Module):
 
 
 class encoder(nn.Module):
-    def __init__(self, d_shape ):
+    def __init__(self, d_shape, n_layers:int=6):
         super().__init__()
         # Both input and output vectors are the same shape
         self.e_layers = nn.ModuleList(
-            [ encode_layer(d_shape) for i in range(6)]
+            [ encode_layer(d_shape) for i in range(n_layers)]
         )
 
-    def forward(self, in_v, out_v):
-        x = out_v
+    def forward(self, in_v ):
+        x = in_v 
         for f in self.d_layers:
-            x = f( in_v, x)
+            x = f( x )
         return self.w(x).reshape(x.shape[0],1)
 
 
