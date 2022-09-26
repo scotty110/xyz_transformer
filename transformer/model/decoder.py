@@ -29,13 +29,13 @@ class decode_layer(nn.Module):
         self.w2 = nn.Linear( d_forward, d_shape )
         self.ln_4 = nn.LayerNorm( d_shape )
 
-    def forward(self, in_vect, out_vect):
+    def forward(self, in_vect, enc_vect):
         block_1 = self.ln_1(
-                    self.mh_1( out_vect, out_vect, out_vect ) + out_vect
+                    self.mh_1( in_vect, in_vect, in_vect ) + in_vect
                   )  
 
         block_2 = self.ln_2(
-                    self.mh_2(in_vect, in_vect, block_1) + out_vect
+                    self.mh_2( enc_vect, enc_vect, block_1) + block_1 
                   )  
 
         block_3 = self.ln_3( self.w1( block_2 ) )
@@ -53,10 +53,10 @@ class decoder(nn.Module):
 
         self.w = nn.Linear(d_shape, probs)
 
-    def forward(self, in_v, out_v):
-        x = out_v
+    def forward(self, in_v, enc_v):
+        x = in_v 
         for f in self.d_layers:
-            x = f( in_v, x)
+            x = f( in_v, enc_v)
         #return F.softmax( self.w(x), dim=1 )
         return self.w(x).reshape(x.shape[0],1)
 
