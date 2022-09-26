@@ -1,0 +1,18 @@
+name: transformer 
+channels:
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.8.5
+  - pip=20.3
+  - cudatoolkit=11.3
+  - pytorch=1.11.0
+  - torchvision=0.12.0
+  - numpy=1.19.2
+  - matplotlib=3.5.2
+  - pip:
+    - datasets==2.4.0
+    - opencv-python==4.1.2.30
+    - pytorch-lightning==1.4.2
+    - torch-fidelity==0.3.0
+    - torchmetrics==0.6.0
