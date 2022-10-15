@@ -43,12 +43,14 @@ class encoder(nn.Module):
         self.e_layers = nn.ModuleList(
             [ encode_layer(d_shape) for i in range(n_layers)]
         )
+        #self.w = nn.Linear(d_shape, d_shape)
 
     def forward(self, in_v ):
         x = in_v 
-        for f in self.d_layers:
+        for f in self.e_layers:
             x = f( x )
-        return self.w(x).reshape(x.shape[0],1)
+        #return self.w(x)
+        return x
 
 
 

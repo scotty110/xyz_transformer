@@ -44,21 +44,20 @@ class decode_layer(nn.Module):
 
 
 class decoder(nn.Module):
-    def __init__(self, d_shape, probs, n_layers:int=6):
+    def __init__(self, d_shape, n_layers:int=6):
         super().__init__()
         # Both input and output vectors are the same shape
         self.d_layers = nn.ModuleList(
             [ decode_layer(d_shape) for i in range(n_layers)]
         )
-
-        self.w = nn.Linear(d_shape, probs)
+        #self.w = nn.Linear(d_shape, d_shape)
 
     def forward(self, out_v, enc_v):
         x = out_v 
         for f in self.d_layers:
             x = f( out_v, enc_v)
-        #return F.softmax( self.w(x), dim=1 )
-        return self.w(x).reshape(x.shape[0],1)
+        #return self.w(x) 
+        return x
 
 
 

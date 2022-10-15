@@ -15,7 +15,8 @@ class wiki_loader():
         self.ds = load_dataset('wikitext', 'wikitext-103-v1', split=split)
 
         pretrained_model = 'bert-base-uncased'
-        self.feature_extraction = pipeline('feature-extraction', model=pretrained_model, tokenizer=pretrained_model, truncation=True, device=0)
+        #self.feature_extraction = pipeline('feature-extraction', model=pretrained_model, tokenizer=pretrained_model, truncation=True, device=0)
+        self.feature_extraction = pipeline('feature-extraction', model=pretrained_model, tokenizer=pretrained_model, truncation=True, device='cpu')
 
     def format_text(self, txt):
         if len(txt)>2:
