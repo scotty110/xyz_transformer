@@ -2,17 +2,16 @@ name: transformer
 channels:
   - pytorch
   - defaults
+  - conda-forge
 dependencies:
-  - python=3.8.5
-  - pip=20.3
-  - cudatoolkit=11.3
-  - pytorch=1.11.0
-  - torchvision=0.12.0
-  - numpy=1.19.2
-  - matplotlib=3.5.2
+  - python=3.10.6
+  - pip=22.2.2
+  - cudatoolkit=11.6
+  - pytorch=1.12.1
+  - numpy=1.23.3
+  - torchtext=0.13.1
+  - torchdata=0.4.1
   - pip:
     - datasets==2.4.0
-    - opencv-python==4.1.2.30
+    - transformers==4.22.2
     - pytorch-lightning==1.4.2
-    - torch-fidelity==0.3.0
-    - torchmetrics==0.6.0
