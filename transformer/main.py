@@ -20,39 +20,36 @@ if __name__ == '__main__':
     model = model.to(device, torch.half)
 
     opt = torch.optim.Adam( model.parameters(), 0.00001 )
-    loss_func = nn.MSELoss().to(device)
+    loss_func = nn.CrossEntropyLoss().to(device) #nn.MSELoss().to(device)
 
     start_t = time.time()
 
-    '''
     tdl = iter(train_dl)
-    tdl_t = next(tdl)
-   
-    x,y,m = tdl_t
-
-    x = x.to(device, torch.half)
-    y = y.to(device, torch.half)
-    m = m.to(device, torch.half)
-    '''
-
-    x = torch.ones(64,512,768).to(device, torch.half)
-    y = torch.ones(64,512,768).to(device, torch.half)
-    m = torch.ones(64,1).to(device, torch.half)
 
     epochs = 20
-
     for e in range(epochs):
-        opt.zero_grad()
-        model.half()
-        output = model(x,y)
-        loss = loss_func(output, m)
-        print("Loss: {}".format(loss.item()))
+        total_loss = 0
+        while True:
+            x,y,m = next(tdl)
 
-        # Learn
-        loss.backward()
-        model.float()
-        opt.step()
+            x = x.to(device, torch.half)
+            y = y.to(device, torch.half)
+            m = m.to(device, torch.half)
 
+            opt.zero_grad()
+            model.half()
+            output = model(x,y)
+            #print(output)
+            loss = loss_func(output, m)
+            total_loss += loss.item()
+            print("Loss: {}".format(loss.item()))
+
+            # Learn
+            loss.backward()
+            model.float()
+            opt.step()
+        print("Loss: {}".format(total_loss))
+        print('Done Loop')
 
     '''
     while n_x != None:
@@ -61,6 +58,5 @@ if __name__ == '__main__':
     end_t = time.time()
 
     print("Elapsed Time: {}".format( end_t - start_t ) )
-    print('Done')
 
 
