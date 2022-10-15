@@ -8,9 +8,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from decoder import decoder
-from encoder import encoder
-from utils import PositionalEncoding 
+from transformer.model.decoder import decoder
+from transformer.model.encoder import encoder
+from transformer.model.utils import PositionalEncoding 
 
 class transformer(nn.Module):
     def __init__(self, d_shape:int):
@@ -33,5 +33,8 @@ class transformer(nn.Module):
 
         # Output Layer
         return F.softmax( self.w( d_output ), dim=1 )
+
+def get_model(shape:int):
+    return transformer(shape)
         
 

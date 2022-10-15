@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from utils import *
+from transformer.model.utils import *
 
 
 class decode_layer(nn.Module):
