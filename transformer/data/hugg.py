@@ -11,12 +11,21 @@ import random
 
 
 class wiki_loader():
-    def __init__(self, split:str='train'):
+    def __init__(self, split:str='train', max_len:int=10):
         self.ds = load_dataset('wikitext', 'wikitext-103-v1', split=split)
 
         pretrained_model = 'bert-base-uncased'
         self.tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
         self.vocab = self.tokenizer.vocab_size
+        self.max_len = max_len
+
+    def crop_text(self, txt):
+        if len(txt)>1:
+            t_split = txt.split(' ')
+            if len(t_split) > 510:
+                t_split = t_split[:510]
+            return ' '.join(t_split)
+        return txt
 
     def __len__(self) -> int:
         return len(self.ds)
@@ -24,20 +33,14 @@ class wiki_loader():
     def __getitem__(self, index) -> tuple:
         # Format Text
         txt = self.ds[index]['text']
-        x_tokens = self.tokenizer.tokenize(txt)
-        #x_logits = self.tokenizer.encode(x_tokens)
-        x_logits = self.tokenizer.encode(txt)
-        x_decode = self.tokenizer.decode(x_logits)
-        d_tokens = self.tokenizer.tokenize(x_decode)
 
-        # AutoFill
-        #y = torch.zeros(1,512,768)
-       
-        #y[0][:y_ext.shape[1]][:] = y_ext
+        #x_logits = self.tokenizer.encode(txt, max_length=self.max_len**2, padding='max_length', return_tensors='pt')
+        x_logits = self.tokenizer.encode(txt, max_length=self.max_len**2, padding='max_length', truncation=True, return_tensors='pt')
+        print(x_logits.shape)
+        #x_logits = x_logits.squeeze() 
+        x_logits = x_logits.reshape(self.max_len, self.max_len)
     
-        #y = y.squeeze()
-        #return (x_tokens)
-        return len(d_tokens)-2 == len(x_tokens)
+        return (x_logits )
 '''
 def get_datasets(batch_size):
     train_dl = DataLoader( wiki_loader('train'), batch_size=batch_size, shuffle=True )
