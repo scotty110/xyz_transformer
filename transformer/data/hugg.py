@@ -19,12 +19,12 @@ class wiki_loader():
         self.vocab = self.tokenizer.vocab_size
         self.max_len = max_len
 
-    def crop_text(self, txt):
-        if len(txt)>1:
-            t_split = txt.split(' ')
-            if len(t_split) > 510:
-                t_split = t_split[:510]
-            return ' '.join(t_split)
+    def make_mask(self, txt:str) -> str:                                        
+        if len(txt)>2:                                                          
+            t_split = txt.split(' ')                                            
+            n = random.randrange(len(t_split))                                  
+            t_split[n] = '[MASK]'                                               
+            return ' '.join(t_split)                                            
         return txt
 
     def __len__(self) -> int:
@@ -32,16 +32,19 @@ class wiki_loader():
 
     def __getitem__(self, index) -> tuple:
         # Format Text
-        txt = self.ds[index]['text']
+        y_txt = self.ds[index]['text']
+        x_txt = self.make_mask(y_txt)
 
-        #x_logits = self.tokenizer.encode(txt, max_length=self.max_len**2, padding='max_length', return_tensors='pt')
-        x_logits = self.tokenizer.encode(txt, max_length=self.max_len**2, padding='max_length', truncation=True, return_tensors='pt')
-        print(x_logits.shape)
-        #x_logits = x_logits.squeeze() 
+        y_logits = self.tokenizer.encode(y_txt, max_length=self.max_len**2, padding='max_length', truncation=True, return_tensors='pt')
+        y_logits = x_logits.reshape(self.max_len, self.max_len)
+        
+        x_logits = self.tokenizer.encode(x_txt, max_length=self.max_len**2, padding='max_length', truncation=True, return_tensors='pt')
         x_logits = x_logits.reshape(self.max_len, self.max_len)
+
+        probs = torch.Tensor([1,0])
     
-        return (x_logits )
-'''
+        return (x_logits, y_logits, probs )
+
 def get_datasets(batch_size):
     train_dl = DataLoader( wiki_loader('train'), batch_size=batch_size, shuffle=True )
     val_dl = DataLoader( wiki_loader('validation'), batch_size=batch_size, shuffle=True )
@@ -52,7 +55,7 @@ if __name__ == '__main__':
     test_ds = wiki_loader()
     for i in range(100):
         print(test_ds[i])
-
+'''
 
 
 
